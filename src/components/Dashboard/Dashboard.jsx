@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import {
     LineChart,
     Line,
@@ -13,7 +13,7 @@ import {
     ResponsiveContainer
 } from 'recharts';
 import PropTypes from 'prop-types';
-import './Dashboard.css';
+// import './Dashboard.css';
 
 const Dashboard = ({ profession }) => {
     const [dashboardData, setDashboardData] = useState(null);
