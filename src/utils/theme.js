@@ -10,7 +10,7 @@ const baseTheme = {
     }
 };
 
-const professionThemes = {
+export const professionThemes = {
     plumbing: {
         colors: {
             primary: '#0047AB',

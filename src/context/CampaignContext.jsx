@@ -1,7 +1,7 @@
 import { createContext, useReducer, useContext, useMemo, useCallback } from 'react';
-import { PROFESSION_CONFIG } from '../utils/theme';
+// import { PROFESSION_CONFIG } from '../utils/theme';
 
-const CampaignContext = createContext();
+export const CampaignContext = createContext();
 
 const initialState = {
     campaigns: [],
@@ -56,7 +56,7 @@ const CampaignProvider = ({ children }) => {
 
     const calculateROI = useCallback(
         (profession, budget) => {
-            const multiplier = PROFESSION_CONFIG[profession]?.roiMultiplier || 2.5;
+            const multiplier = 2.5;
             const roi = ((budget * multiplier - budget) / budget) * 100;
             dispatch({ type: 'SET_ROI_PREDICTION', payload: Math.round(roi) });
         },
@@ -91,7 +91,7 @@ const CampaignProvider = ({ children }) => {
             calculateROI,
             saveCampaign,
             loadCampaigns,
-            professionTypes: Object.keys(PROFESSION_CONFIG)
+            professionTypes: []
         }),
         [state, calculateROI, saveCampaign, loadCampaigns]
     );

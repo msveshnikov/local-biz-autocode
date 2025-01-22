@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CampaignContext } from '../../context/CampaignContext';
-import ProfessionTheme from '../../utils/theme';
+import {professionThemes} from '../../utils/theme.js';
 
 const CampaignBuilder = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -39,7 +39,7 @@ const CampaignBuilder = () => {
         }
     };
 
-    const theme = ProfessionTheme[selectedProfession] || ProfessionTheme.default;
+    const theme = professionThemes[selectedProfession] || professionThemes.default;
 
     return (
         <div
