@@ -1,14 +1,15 @@
 # Marketing Platform for Local Businesses
 
-A platform for small business marketing focused on ROI for professions such as plumbers, lawyers, and doctors.
+A platform for small business marketing focused on ROI for professions such as plumbers, lawyers,
+and doctors.
 
 ## Features
 
--   ROI-driven campaign management
--   Profession-specific marketing templates
--   Performance analytics dashboard
--   Mobile-responsive design
--   Easy contact form integration
+- ROI-driven campaign management
+- Profession-specific marketing templates
+- Performance analytics dashboard
+- Mobile-responsive design
+- Easy contact form integration
 
 ## Design Ideas
 
@@ -33,53 +34,53 @@ A platform for small business marketing focused on ROI for professions such as p
 
 ### UX Considerations
 
--   Simplified navigation for non-technical users
--   Tooltips explaining marketing terminology
--   Service-specific CTAs (e.g. "Book Emergency Plumbing" vs "Schedule Legal Consultation")
--   Loading states for analytics data
+- Simplified navigation for non-technical users
+- Tooltips explaining marketing terminology
+- Service-specific CTAs (e.g. "Book Emergency Plumbing" vs "Schedule Legal Consultation")
+- Loading states for analytics data
 
 ## Technical Considerations
 
 ### Frontend Architecture
 
--   Component-based structure using React
--   State management with Context API
--   Dynamic theming system for profession-specific styling
--   Responsive layout using CSS Grid/Flexbox
+- Component-based structure using React
+- State management with Context API
+- Dynamic theming system for profession-specific styling
+- Responsive layout using CSS Grid/Flexbox
 
 ### Performance
 
--   Lazy-loaded components for dashboard
--   Image optimization pipeline
--   Caching strategy for analytics data
--   Critical CSS inlining
+- Lazy-loaded components for dashboard
+- Image optimization pipeline
+- Caching strategy for analytics data
+- Critical CSS inlining
 
 ### Integration
 
--   REST API for campaign management
--   Google My Business API integration
--   Social media embed support
--   Email service provider webhooks
+- REST API for campaign management
+- Google My Business API integration
+- Social media embed support
+- Email service provider webhooks
 
 ## Roadmap
 
 **Phase 1: MVP**
 
--   Core dashboard functionality
--   Basic template library
--   Contact form generator
+- Core dashboard functionality
+- Basic template library
+- Contact form generator
 
 **Phase 2: Expansion**
 
--   Advanced analytics (conversion tracking)
--   Multi-channel campaign support
--   Client review management
+- Advanced analytics (conversion tracking)
+- Multi-channel campaign support
+- Client review management
 
 **Phase 3: Advanced Features**
 
--   AI-powered content suggestions
--   Competitor analysis tools
--   Local SEO optimization checker
+- AI-powered content suggestions
+- Competitor analysis tools
+- Local SEO optimization checker
 
 ## Project Structure
 
