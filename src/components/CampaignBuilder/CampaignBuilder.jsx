@@ -8,7 +8,7 @@ const CampaignBuilder = () => {
     const [selectedProfession, setSelectedProfession] = useState('');
     const [budget, setBudget] = useState(500);
     const [includeDirectory, setIncludeDirectory] = useState(false);
-    
+
     const { saveCampaign, calculateROI, roiPrediction, isLoading } = useCampaign();
     const navigate = useNavigate();
 
@@ -46,8 +46,14 @@ const CampaignBuilder = () => {
     const theme = professionThemes[selectedProfession] || professionThemes.default;
 
     return (
-        <div className="campaign-builder" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-            <div className="step-indicator" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}>
+        <div
+            className="campaign-builder"
+            style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}
+        >
+            <div
+                className="step-indicator"
+                style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}
+            >
                 {[1, 2, 3].map((step) => (
                     <div
                         key={step}
@@ -70,13 +76,19 @@ const CampaignBuilder = () => {
             {currentStep === 1 && (
                 <div className="profession-select">
                     <h2 style={{ color: theme.colors.primary }}>Select Your Profession</h2>
-                    <div className="profession-buttons" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <div
+                        className="profession-buttons"
+                        style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
+                    >
                         {professions.map((profession) => (
                             <button
                                 key={profession}
                                 onClick={() => setSelectedProfession(profession)}
                                 style={{
-                                    background: selectedProfession === profession ? theme.colors.primary : '#f0f0f0',
+                                    background:
+                                        selectedProfession === profession
+                                            ? theme.colors.primary
+                                            : '#f0f0f0',
                                     color: selectedProfession === profession ? 'white' : '#333',
                                     padding: '15px 25px',
                                     borderRadius: '8px',
@@ -109,7 +121,7 @@ const CampaignBuilder = () => {
                     </div>
                     <div style={{ margin: '20px 0' }}>
                         <p>
-                            Predicted ROI: {roiPrediction}% 
+                            Predicted ROI: {roiPrediction}%
                             <span style={{ fontSize: '0.8em', color: '#666', marginLeft: '8px' }}>
                                 (Based on average performance for {selectedProfession} services)
                             </span>
@@ -140,7 +152,10 @@ const CampaignBuilder = () => {
                 </div>
             )}
 
-            <div className="navigation-buttons" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}>
+            <div
+                className="navigation-buttons"
+                style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}
+            >
                 {currentStep > 1 && (
                     <button
                         onClick={handleBack}
