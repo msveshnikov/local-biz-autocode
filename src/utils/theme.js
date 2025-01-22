@@ -37,12 +37,27 @@ export const professionThemes = {
             text: '#006400',
             background: '#F0FFF0'
         }
+    },
+    trade: {
+        colors: {
+            primary: '#3A4750',
+            secondary: '#D72323',
+            accent: '#F5EDDC',
+            text: '#FFFFFF',
+            background: '#F0F0F0'
+        }
     }
 };
 
 const getProfessionTheme = (profession) => {
+    const professionMappings = {
+        plumber: 'plumbing',
+        lawyer: 'legal',
+        doctor: 'medical'
+    };
+    const mappedProfession = professionMappings[profession] || profession;
     const validProfessions = Object.keys(professionThemes);
-    const themeKey = validProfessions.includes(profession) ? profession : 'plumbing';
+    const themeKey = validProfessions.includes(mappedProfession) ? mappedProfession : 'plumbing';
     return professionThemes[themeKey];
 };
 

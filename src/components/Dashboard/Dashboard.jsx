@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTheme } from '../../App';
 import {
     LineChart,
     Line,
@@ -12,23 +13,44 @@ import {
     Tooltip,
     ResponsiveContainer
 } from 'recharts';
-import PropTypes from 'prop-types';
-// import './Dashboard.css';
+import { useCampaign } from '../../context/CampaignContext';
+import { professionThemes } from '../../utils/theme';
 
-const Dashboard = ({ profession }) => {
+const CustomTooltip = ({ active, payload, label, explanation }) => {
+    if (!active || !payload) return null;
+    return (
+        <div style={{
+            backgroundColor: 'white',
+            border: '1px solid #ddd',
+            padding: '10px',
+            borderRadius: '4px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+            <p style={{ fontWeight: 'bold', margin: '0 0 5px 0' }}>{label}</p>
+            <p style={{ margin: '0 0 5px 0' }}>{payload[0].name}: {payload[0].value}</p>
+            <p style={{ fontSize: '0.8em', color: '#666', margin: 0 }}>{explanation}</p>
+        </div>
+    );
+};
+
+const Dashboard = () => {
+    const { theme: profession } = useTheme();
+    const { roiPrediction } = useCampaign();
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const theme = professionThemes[profession] || professionThemes.plumbing;
+    const primaryColor = theme.colors.primary;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Simulated API call
-                await new Promise((resolve) => setTimeout(resolve, 1500));
+                await new Promise(resolve => setTimeout(resolve, 1500));
                 const mockData = {
                     roi: [
                         { month: 'Jan', value: 65 },
                         { month: 'Feb', value: 75 },
-                        { month: 'Mar', value: 85 }
+                        { month: 'Mar', value: roiPrediction || 85 }
                     ],
                     leads: [
                         { source: 'Web', count: 45 },
@@ -50,16 +72,7 @@ const Dashboard = ({ profession }) => {
         };
 
         fetchData();
-    }, []);
-
-    const getProfessionColor = () => {
-        const colors = {
-            plumber: '#4A90E2',
-            lawyer: '#8B5CF6',
-            doctor: '#10B981'
-        };
-        return colors[profession] || '#4A90E2';
-    };
+    }, [roiPrediction]);
 
     if (loading) {
         return (
@@ -85,11 +98,11 @@ const Dashboard = ({ profession }) => {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />
-                                <Tooltip />
+                                <Tooltip content={<CustomTooltip explanation="Return on Investment percentage based on campaign performance" />} />
                                 <Line
                                     type="monotone"
                                     dataKey="value"
-                                    stroke={getProfessionColor()}
+                                    stroke={primaryColor}
                                     strokeWidth={2}
                                 />
                             </LineChart>
@@ -105,8 +118,8 @@ const Dashboard = ({ profession }) => {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="source" />
                                 <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="count" fill={getProfessionColor()} />
+                                <Tooltip content={<CustomTooltip explanation="Breakdown of lead generation by acquisition source" />} />
+                                <Bar dataKey="count" fill={primaryColor} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
@@ -120,12 +133,12 @@ const Dashboard = ({ profession }) => {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="week" />
                                 <YAxis />
-                                <Tooltip />
+                                <Tooltip content={<CustomTooltip explanation="Comparison of marketing costs against generated revenue" />} />
                                 <Area
                                     type="monotone"
                                     dataKey="revenue"
-                                    fill={getProfessionColor()}
-                                    stroke={getProfessionColor()}
+                                    fill={primaryColor}
+                                    stroke={primaryColor}
                                 />
                                 <Area
                                     type="monotone"
@@ -140,10 +153,6 @@ const Dashboard = ({ profession }) => {
             </div>
         </div>
     );
-};
-
-Dashboard.propTypes = {
-    profession: PropTypes.oneOf(['plumber', 'lawyer', 'doctor']).isRequired
 };
 
 export default Dashboard;

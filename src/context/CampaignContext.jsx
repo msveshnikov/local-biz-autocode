@@ -1,5 +1,12 @@
 import { createContext, useReducer, useContext, useMemo, useCallback } from 'react';
-// import { PROFESSION_CONFIG } from '../utils/theme';
+import { professionThemes } from '../utils/theme';
+
+const PROFESSION_MULTIPLIERS = {
+    plumbing: 2.8,
+    legal: 3.2,
+    medical: 2.5,
+    default: 2.5
+};
 
 export const CampaignContext = createContext();
 
@@ -8,7 +15,8 @@ const initialState = {
     currentCampaign: null,
     isLoading: false,
     error: null,
-    roiPrediction: null
+    roiPrediction: null,
+    professionTypes: Object.keys(professionThemes)
 };
 
 const campaignReducer = (state, action) => {
@@ -52,26 +60,35 @@ const CampaignProvider = ({ children }) => {
         } finally {
             dispatch({ type: 'SET_LOADING', payload: false });
         }
-    }, [dispatch]);
+    }, []);
 
-    const calculateROI = useCallback(
-        (profession, budget) => {
-            const multiplier = 2.5;
-            const roi = ((budget * multiplier - budget) / budget) * 100;
-            dispatch({ type: 'SET_ROI_PREDICTION', payload: Math.round(roi) });
-        },
-        [dispatch]
-    );
+    const calculateROI = useCallback((profession, budget) => {
+        const multiplier = PROFESSION_MULTIPLIERS[profession] || PROFESSION_MULTIPLIERS.default;
+        const roi = ((budget * multiplier - budget) / budget) * 100;
+        dispatch({ type: 'SET_ROI_PREDICTION', payload: Math.round(roi) });
+    }, []);
 
-    const saveCampaign = useCallback(
+    const createCampaign = useCallback(
         async (campaignData) => {
             dispatch({ type: 'SET_LOADING', payload: true });
             try {
+                const multiplier =
+                    PROFESSION_MULTIPLIERS[campaignData.profession] ||
+                    PROFESSION_MULTIPLIERS.default;
+                const roi =
+                    ((campaignData.budget * multiplier - campaignData.budget) /
+                        campaignData.budget) *
+                    100;
+
                 const response = await fetch('/api/campaigns', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(campaignData)
+                    body: JSON.stringify({
+                        ...campaignData,
+                        roiPrediction: Math.round(roi)
+                    })
                 });
+
                 await loadCampaigns();
                 return await response.json();
             } catch (error) {
@@ -81,7 +98,7 @@ const CampaignProvider = ({ children }) => {
                 dispatch({ type: 'SET_LOADING', payload: false });
             }
         },
-        [dispatch, loadCampaigns]
+        [loadCampaigns]
     );
 
     const value = useMemo(
@@ -89,11 +106,10 @@ const CampaignProvider = ({ children }) => {
             ...state,
             dispatch,
             calculateROI,
-            saveCampaign,
-            loadCampaigns,
-            professionTypes: []
+            createCampaign,
+            loadCampaigns
         }),
-        [state, calculateROI, saveCampaign, loadCampaigns]
+        [state, calculateROI, createCampaign, loadCampaigns]
     );
 
     return <CampaignContext.Provider value={value}>{children}</CampaignContext.Provider>;

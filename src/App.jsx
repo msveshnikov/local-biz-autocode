@@ -1,5 +1,6 @@
 import { createContext, useState, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { CampaignProvider } from './context/CampaignContext';
 import Dashboard from './components/Dashboard/Dashboard';
 import CampaignBuilder from './components/CampaignBuilder/CampaignBuilder';
 import Templates from './components/Templates/Templates';
@@ -11,10 +12,10 @@ export function useTheme() {
 }
 
 function Navigation() {
-    const { theme } = useTheme();
+    const { profession } = useTheme();
 
     return (
-        <nav className={`navbar ${theme}`}>
+        <nav className={`navbar ${profession}`}>
             <div className="container">
                 <Link to="/" className="brand">
                     MarketingPlatform
@@ -30,45 +31,54 @@ function Navigation() {
 }
 
 function App() {
-    const [professionTheme, setProfessionTheme] = useState('default');
+    const [profession, setProfession] = useState('default');
 
     return (
-        <ThemeContext.Provider value={{ theme: professionTheme, setTheme: setProfessionTheme }}>
-            <BrowserRouter>
-                <div className="app-container">
-                    <Navigation />
+        <CampaignProvider>
+            <ThemeContext.Provider value={{ profession, setProfession }}>
+                <BrowserRouter>
+                    <div className="app-container">
+                        <Navigation />
 
-                    <main className="main-content">
-                        <Routes>
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/templates" element={<Templates />} />
-                            <Route path="/campaign" element={<CampaignBuilder />} />
-                            <Route
-                                path="/"
-                                element={
-                                    <section className="hero">
-                                        <h1>Boost Your Local Business ROI</h1>
-                                        <p>
-                                            Professional marketing solutions for service providers
-                                        </p>
-                                    </section>
-                                }
-                            />
-                        </Routes>
-                    </main>
+                        <main className="main-content">
+                            <Routes>
+                                <Route
+                                    path="/dashboard"
+                                    element={<Dashboard profession={profession} />}
+                                />
+                                <Route
+                                    path="/templates"
+                                    element={<Templates profession={profession} />}
+                                />
+                                <Route path="/campaign" element={<CampaignBuilder />} />
+                                <Route
+                                    path="/"
+                                    element={
+                                        <section className="hero">
+                                            <h1>Boost Your Local Business ROI</h1>
+                                            <p>
+                                                Professional marketing solutions for service
+                                                providers
+                                            </p>
+                                        </section>
+                                    }
+                                />
+                            </Routes>
+                        </main>
 
-                    <footer className="app-footer">
-                        <div className="container">
-                            <p>© 2024 MarketingPlatform. All rights reserved.</p>
-                            <div className="footer-links">
-                                <Link to="/privacy">Privacy Policy</Link>
-                                <Link to="/terms">Terms of Service</Link>
+                        <footer className="app-footer">
+                            <div className="container">
+                                <p>© 2024 MarketingPlatform. All rights reserved.</p>
+                                <div className="footer-links">
+                                    <Link to="/privacy">Privacy Policy</Link>
+                                    <Link to="/terms">Terms of Service</Link>
+                                </div>
                             </div>
-                        </div>
-                    </footer>
-                </div>
-            </BrowserRouter>
-        </ThemeContext.Provider>
+                        </footer>
+                    </div>
+                </BrowserRouter>
+            </ThemeContext.Provider>
+        </CampaignProvider>
     );
 }
 

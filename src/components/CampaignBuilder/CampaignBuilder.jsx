@@ -1,19 +1,24 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CampaignContext } from '../../context/CampaignContext';
-import {professionThemes} from '../../utils/theme.js';
+import { useCampaign } from '../../context/CampaignContext';
+import { professionThemes } from '../../utils/theme.js';
 
 const CampaignBuilder = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [selectedProfession, setSelectedProfession] = useState('');
     const [budget, setBudget] = useState(500);
     const [includeDirectory, setIncludeDirectory] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const { createCampaign } = useContext(CampaignContext);
+    
+    const { saveCampaign, calculateROI, roiPrediction, isLoading } = useCampaign();
     const navigate = useNavigate();
 
     const professions = ['legal', 'medical', 'plumbing'];
-    const roiPrediction = budget * 2; // Simplified ROI calculation
+
+    useEffect(() => {
+        if (selectedProfession && budget) {
+            calculateROI(selectedProfession, budget);
+        }
+    }, [selectedProfession, budget, calculateROI]);
 
     const handleNext = () => {
         if (currentStep === 1 && !selectedProfession) return;
@@ -25,31 +30,24 @@ const CampaignBuilder = () => {
     };
 
     const handleSubmit = async () => {
-        setIsSubmitting(true);
         try {
-            await createCampaign({
+            await saveCampaign({
                 profession: selectedProfession,
                 budget,
                 roiPrediction,
                 includeDirectory
             });
             navigate('/dashboard');
-        } finally {
-            setIsSubmitting(false);
+        } catch (error) {
+            console.error('Campaign submission failed:', error);
         }
     };
 
     const theme = professionThemes[selectedProfession] || professionThemes.default;
 
     return (
-        <div
-            className="campaign-builder"
-            style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}
-        >
-            <div
-                className="step-indicator"
-                style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}
-            >
+        <div className="campaign-builder" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+            <div className="step-indicator" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}>
                 {[1, 2, 3].map((step) => (
                     <div
                         key={step}
@@ -57,7 +55,7 @@ const CampaignBuilder = () => {
                             width: '30px',
                             height: '30px',
                             borderRadius: '50%',
-                            background: currentStep >= step ? theme.primaryColor : '#ccc',
+                            background: currentStep >= step ? theme.colors.primary : '#ccc',
                             color: 'white',
                             display: 'flex',
                             alignItems: 'center',
@@ -71,20 +69,14 @@ const CampaignBuilder = () => {
 
             {currentStep === 1 && (
                 <div className="profession-select">
-                    <h2 style={{ color: theme.primaryColor }}>Select Your Profession</h2>
-                    <div
-                        className="profession-buttons"
-                        style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}
-                    >
+                    <h2 style={{ color: theme.colors.primary }}>Select Your Profession</h2>
+                    <div className="profession-buttons" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                         {professions.map((profession) => (
                             <button
                                 key={profession}
                                 onClick={() => setSelectedProfession(profession)}
                                 style={{
-                                    background:
-                                        selectedProfession === profession
-                                            ? theme.primaryColor
-                                            : '#f0f0f0',
+                                    background: selectedProfession === profession ? theme.colors.primary : '#f0f0f0',
                                     color: selectedProfession === profession ? 'white' : '#333',
                                     padding: '15px 25px',
                                     borderRadius: '8px',
@@ -101,7 +93,7 @@ const CampaignBuilder = () => {
 
             {currentStep === 2 && (
                 <div className="budget-section">
-                    <h2 style={{ color: theme.primaryColor }}>Set Your Budget</h2>
+                    <h2 style={{ color: theme.colors.primary }}>Set Your Budget</h2>
                     <div style={{ margin: '20px 0' }}>
                         <label>
                             Monthly Budget: ${budget}
@@ -116,7 +108,12 @@ const CampaignBuilder = () => {
                         </label>
                     </div>
                     <div style={{ margin: '20px 0' }}>
-                        <p>Predicted Monthly ROI: ${roiPrediction}</p>
+                        <p>
+                            Predicted ROI: {roiPrediction}% 
+                            <span style={{ fontSize: '0.8em', color: '#666', marginLeft: '8px' }}>
+                                (Based on average performance for {selectedProfession} services)
+                            </span>
+                        </p>
                     </div>
                     <div className="directory-integration">
                         <label>
@@ -125,7 +122,7 @@ const CampaignBuilder = () => {
                                 checked={includeDirectory}
                                 onChange={(e) => setIncludeDirectory(e.target.checked)}
                             />
-                            Include in Local Business Directory
+                            Include in Local Business Directory (+15% reach)
                         </label>
                     </div>
                 </div>
@@ -133,19 +130,17 @@ const CampaignBuilder = () => {
 
             {currentStep === 3 && (
                 <div className="confirmation">
-                    <h2 style={{ color: theme.primaryColor }}>Confirm Your Campaign</h2>
+                    <h2 style={{ color: theme.colors.primary }}>Confirm Your Campaign</h2>
                     <div style={{ margin: '20px 0' }}>
                         <p>Profession: {selectedProfession}</p>
                         <p>Budget: ${budget}/month</p>
+                        <p>ROI Prediction: {roiPrediction}%</p>
                         <p>Directory Inclusion: {includeDirectory ? 'Yes' : 'No'}</p>
                     </div>
                 </div>
             )}
 
-            <div
-                className="navigation-buttons"
-                style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}
-            >
+            <div className="navigation-buttons" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}>
                 {currentStep > 1 && (
                     <button
                         onClick={handleBack}
@@ -165,14 +160,16 @@ const CampaignBuilder = () => {
                 {currentStep < 3 ? (
                     <button
                         onClick={handleNext}
+                        disabled={!selectedProfession}
                         style={{
-                            background: theme.primaryColor,
+                            background: theme.colors.primary,
                             color: 'white',
                             padding: '10px 25px',
                             border: 'none',
                             borderRadius: '5px',
                             cursor: 'pointer',
-                            marginLeft: 'auto'
+                            marginLeft: 'auto',
+                            opacity: !selectedProfession ? 0.6 : 1
                         }}
                     >
                         Next
@@ -180,17 +177,17 @@ const CampaignBuilder = () => {
                 ) : (
                     <button
                         onClick={handleSubmit}
-                        disabled={isSubmitting}
+                        disabled={isLoading}
                         style={{
-                            background: isSubmitting ? '#999' : theme.primaryColor,
+                            background: isLoading ? '#999' : theme.colors.primary,
                             color: 'white',
                             padding: '10px 25px',
                             border: 'none',
                             borderRadius: '5px',
-                            cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                            cursor: isLoading ? 'not-allowed' : 'pointer'
                         }}
                     >
-                        {isSubmitting ? 'Submitting...' : 'Launch Campaign'}
+                        {isLoading ? 'Submitting...' : 'Launch Campaign'}
                     </button>
                 )}
             </div>

@@ -1,13 +1,6 @@
-import React, { useContext } from 'react';
 import styled from 'styled-components';
-
-const ProfessionThemeContext = React.createContext();
-
-const professionThemes = {
-    legal: { primary: '#2A3B4D', secondary: '#5F7D8C', accent: '#C8AD7F' },
-    medical: { primary: '#004445', secondary: '#2C7873', accent: '#FFD9C0' },
-    trade: { primary: '#3A4750', secondary: '#D72323', accent: '#F5EDDC' }
-};
+import { useTheme } from '../../App';
+import { useTheme as useProfessionTheme } from '../../utils/theme';
 
 const TemplateGrid = styled.div`
     display: grid;
@@ -30,36 +23,29 @@ const TemplatePreview = styled.div`
 `;
 
 const TemplateHeader = styled.div`
-    background: ${(props) => props.theme.primary};
+    background: ${(props) => props.theme.colors.primary};
     padding: 1.5rem;
-    color: white;
+    color: ${(props) => props.theme.colors.background};
 `;
 
 const TemplateContent = styled.div`
     padding: 1.5rem;
-    background: white;
+    background: ${(props) => props.theme.colors.background};
+    color: ${(props) => props.theme.colors.text};
 `;
 
-const ProfessionThemeProvider = ({ profession, children }) => {
-    const theme = professionThemes[profession] || professionThemes.legal;
-    return (
-        <ProfessionThemeContext.Provider value={theme}>{children}</ProfessionThemeContext.Provider>
-    );
-};
-
-const TemplateItem = ({ title, description, cta }) => {
-    const theme = useContext(ProfessionThemeContext);
+const TemplateItem = ({ title, description, cta, theme }) => {
     return (
         <TemplatePreview>
             <TemplateHeader theme={theme}>
                 <h3>{title}</h3>
             </TemplateHeader>
-            <TemplateContent>
+            <TemplateContent theme={theme}>
                 <p>{description}</p>
                 <button
                     style={{
-                        backgroundColor: theme.accent,
-                        color: theme.primary,
+                        backgroundColor: theme.colors.accent,
+                        color: theme.colors.text,
                         padding: '0.5rem 1rem',
                         border: 'none',
                         borderRadius: '4px'
@@ -87,7 +73,7 @@ const templates = {
             cta: 'Book Appointment'
         }
     ],
-    trade: [
+    plumbing: [
         {
             title: 'Emergency Service Page',
             description: 'Urgent-service focused layout for tradespeople',
@@ -96,14 +82,16 @@ const templates = {
     ]
 };
 
-export default function Templates({ profession = 'legal' }) {
+export default function Templates() {
+    const { theme: profession } = useTheme();
+    const validProfession = Object.keys(templates).includes(profession) ? profession : 'legal';
+    const theme = useProfessionTheme(validProfession);
+
     return (
-        <ProfessionThemeProvider profession={profession}>
-            <TemplateGrid>
-                {templates[profession].map((template, index) => (
-                    <TemplateItem key={index} {...template} />
-                ))}
-            </TemplateGrid>
-        </ProfessionThemeProvider>
+        <TemplateGrid>
+            {templates[validProfession].map((template, index) => (
+                <TemplateItem key={index} {...template} theme={theme} />
+            ))}
+        </TemplateGrid>
     );
 }
