@@ -54,8 +54,14 @@ const CampaignBuilder = () => {
     const theme = professionThemes[selectedProfession] || professionThemes.default;
 
     return (
-        <div className="campaign-builder" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-            <div className="step-indicator" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}>
+        <div
+            className="campaign-builder"
+            style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}
+        >
+            <div
+                className="step-indicator"
+                style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}
+            >
                 {[1, 2, 3].map((step) => (
                     <div
                         key={step}
@@ -78,13 +84,23 @@ const CampaignBuilder = () => {
             {currentStep === 1 && (
                 <div className="profession-select">
                     <h2 style={{ color: theme.colors.primary }}>Select Your Profession</h2>
-                    <div className="profession-buttons" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '10px' }}>
+                    <div
+                        className="profession-buttons"
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                            gap: '10px'
+                        }}
+                    >
                         {professions.map((profession) => (
                             <button
                                 key={profession}
                                 onClick={() => setSelectedProfession(profession)}
                                 style={{
-                                    background: selectedProfession === profession ? theme.colors.primary : '#f0f0f0',
+                                    background:
+                                        selectedProfession === profession
+                                            ? theme.colors.primary
+                                            : '#f0f0f0',
                                     color: selectedProfession === profession ? 'white' : '#333',
                                     padding: '15px 10px',
                                     borderRadius: '8px',
@@ -117,7 +133,7 @@ const CampaignBuilder = () => {
                         </label>
                     </div>
                     <div style={{ margin: '20px 0', position: 'relative' }}>
-                        <p 
+                        <p
                             onMouseEnter={() => setShowROITooltip(true)}
                             onMouseLeave={() => setShowROITooltip(false)}
                             style={{ cursor: 'help' }}
@@ -128,25 +144,27 @@ const CampaignBuilder = () => {
                             </span>
                         </p>
                         {showROITooltip && (
-                            <div style={{
-                                position: 'absolute',
-                                bottom: '100%',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                backgroundColor: '#333',
-                                color: '#fff',
-                                padding: '8px',
-                                borderRadius: '4px',
-                                fontSize: '0.9em',
-                                whiteSpace: 'nowrap',
-                                zIndex: 100
-                            }}>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '100%',
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    backgroundColor: '#333',
+                                    color: '#fff',
+                                    padding: '8px',
+                                    borderRadius: '4px',
+                                    fontSize: '0.9em',
+                                    whiteSpace: 'nowrap',
+                                    zIndex: 100
+                                }}
+                            >
                                 Estimated return based on historical data for your profession
                             </div>
                         )}
                     </div>
                     <div className="directory-integration" style={{ position: 'relative' }}>
-                        <label 
+                        <label
                             onMouseEnter={() => setShowDirectoryTooltip(true)}
                             onMouseLeave={() => setShowDirectoryTooltip(false)}
                             style={{ cursor: 'help' }}
@@ -160,18 +178,20 @@ const CampaignBuilder = () => {
                             Include in Local Business Directory (+15% reach)
                         </label>
                         {showDirectoryTooltip && (
-                            <div style={{
-                                position: 'absolute',
-                                bottom: '100%',
-                                left: '0',
-                                backgroundColor: '#333',
-                                color: '#fff',
-                                padding: '8px',
-                                borderRadius: '4px',
-                                fontSize: '0.9em',
-                                whiteSpace: 'nowrap',
-                                zIndex: 100
-                            }}>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '100%',
+                                    left: '0',
+                                    backgroundColor: '#333',
+                                    color: '#fff',
+                                    padding: '8px',
+                                    borderRadius: '4px',
+                                    fontSize: '0.9em',
+                                    whiteSpace: 'nowrap',
+                                    zIndex: 100
+                                }}
+                            >
                                 Automatic listing in partner directories for increased visibility
                             </div>
                         )}
@@ -191,7 +211,10 @@ const CampaignBuilder = () => {
                 </div>
             )}
 
-            <div className="navigation-buttons" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}>
+            <div
+                className="navigation-buttons"
+                style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}
+            >
                 {currentStep > 1 && (
                     <button
                         onClick={handleBack}
@@ -238,7 +261,9 @@ const CampaignBuilder = () => {
                             cursor: isLoading ? 'not-allowed' : 'pointer'
                         }}
                     >
-                        {isLoading ? 'Submitting...' : ctaLabels[selectedProfession] || ctaLabels.default}
+                        {isLoading
+                            ? 'Submitting...'
+                            : ctaLabels[selectedProfession] || ctaLabels.default}
                     </button>
                 )}
             </div>
