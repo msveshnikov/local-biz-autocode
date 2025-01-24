@@ -10,6 +10,7 @@
         "sentiment": "positive",
         "responded": false,
         "featured": true,
+        "testimonial": false,
         "responseTemplates": [
             {
                 "id": "tpl-1",
@@ -34,6 +35,7 @@
         "sentiment": "neutral",
         "responded": true,
         "featured": false,
+        "testimonial": false,
         "responseTemplates": [
             {
                 "id": "tpl-3",
@@ -53,6 +55,7 @@
         "sentiment": "positive",
         "responded": true,
         "featured": true,
+        "testimonial": true,
         "responseTemplates": [
             {
                 "id": "tpl-4",
@@ -72,6 +75,7 @@
         "sentiment": "negative",
         "responded": false,
         "featured": false,
+        "testimonial": false,
         "responseTemplates": [
             {
                 "id": "tpl-5",
@@ -91,6 +95,7 @@
         "sentiment": "positive",
         "responded": false,
         "featured": true,
+        "testimonial": true,
         "responseTemplates": [
             {
                 "id": "tpl-6",
@@ -110,6 +115,7 @@
         "sentiment": "positive",
         "responded": true,
         "featured": true,
+        "testimonial": true,
         "responseTemplates": [
             {
                 "id": "tpl-7",
@@ -129,6 +135,7 @@
         "sentiment": "negative",
         "responded": false,
         "featured": false,
+        "testimonial": false,
         "responseTemplates": [
             {
                 "id": "tpl-8",
@@ -148,11 +155,52 @@
         "sentiment": "positive",
         "responded": true,
         "featured": false,
+        "testimonial": false,
         "responseTemplates": [
             {
                 "id": "tpl-9",
                 "name": "Appreciation Template",
                 "content": "Thank you for your kind words! We're glad our dashboard is helping you track your marketing success."
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "author": "Jessica Brown",
+        "platform": "Yelp",
+        "rating": 1,
+        "content": "Frustrating experience with template customization - limited options for legal websites.",
+        "date": "2024-03-07T10:00:00Z",
+        "profession": "lawyer",
+        "sentiment": "negative",
+        "responded": false,
+        "featured": false,
+        "testimonial": false,
+        "responseTemplates": [
+            {
+                "id": "tpl-10",
+                "name": "Escalation Template",
+                "content": "We sincerely apologize for your experience. Our design team will reach out to assist you directly."
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "author": "Daniel Kim",
+        "platform": "Facebook",
+        "rating": 4,
+        "content": "Useful platform overall, but wish the analytics updated in real-time instead of daily batches.",
+        "date": "2024-03-06T14:15:00Z",
+        "profession": "doctor",
+        "sentiment": "neutral",
+        "responded": true,
+        "featured": false,
+        "testimonial": false,
+        "responseTemplates": [
+            {
+                "id": "tpl-11",
+                "name": "Update Template",
+                "content": "Thank you for the feedback! We're exploring real-time analytics features for future updates."
             }
         ]
     }

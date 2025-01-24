@@ -140,14 +140,56 @@ const Reviews = () => {
     };
 
     const filteredReviews = reviews.filter((review) => {
-        const platformMatch = selectedPlatform === 'all' || review.platform === selectedPlatform;
+        const platformMatch = selectedPlatform === 'all' || review.platform.toLowerCase() === selectedPlatform;
         const sentimentMatch =
             selectedSentiment === 'all' || review.sentiment === selectedSentiment;
         return platformMatch && sentimentMatch;
     });
 
+    const positiveCount = reviews.filter(r => r.sentiment === 'positive').length;
+    const neutralCount = reviews.filter(r => r.sentiment === 'neutral').length;
+    const negativeCount = reviews.filter(r => r.sentiment === 'negative').length;
+
     if (error) return <div style={styles.error}>Error loading reviews: {error}</div>;
-    if (loading) return <div style={styles.loading}>Loading reviews...</div>;
+    
+    if (loading) return (
+        <div style={styles.container}>
+            <div style={styles.header}>
+                <h2 style={{ ...styles.title, color: theme.colors.primary }}>Review Management</h2>
+                <div style={styles.filters}>
+                    <div style={styles.filterGroup}>
+                        <div style={{ ...styles.skeletonFilter, width: '150px' }} />
+                    </div>
+                    <div style={styles.filterGroup}>
+                        <div style={{ ...styles.skeletonFilter, width: '120px' }} />
+                    </div>
+                </div>
+            </div>
+            <div style={styles.statsBar}>
+                {[...Array(6)].map((_, index) => (
+                    <div key={index} style={styles.statItem}>
+                        <div style={styles.skeletonStatValue} />
+                        <div style={styles.skeletonStatLabel} />
+                    </div>
+                ))}
+            </div>
+            <div style={styles.reviewsList}>
+                {[...Array(3)].map((_, index) => (
+                    <div key={index} style={{ ...styles.reviewCard, borderColor: '#e0e0e0' }}>
+                        <div style={styles.skeletonHeader}>
+                            <div style={styles.skeletonPlatform} />
+                            <div style={styles.skeletonRating} />
+                        </div>
+                        <div style={styles.skeletonContent} />
+                        <div style={styles.skeletonActions}>
+                            <div style={styles.skeletonButton} />
+                            <div style={styles.skeletonButton} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 
     return (
         <div style={styles.container}>
@@ -165,6 +207,7 @@ const Reviews = () => {
                             <option value="google">Google</option>
                             <option value="yelp">Yelp</option>
                             <option value="facebook">Facebook</option>
+                            <option value="website">Website</option>
                         </select>
                     </div>
                     <div style={styles.filterGroup}>
@@ -186,6 +229,18 @@ const Reviews = () => {
                 <div style={styles.statItem}>
                     <span style={styles.statValue}>{reviews.length}</span>
                     <span style={styles.statLabel}>Total Reviews</span>
+                </div>
+                <div style={styles.statItem}>
+                    <span style={styles.statValue}>{positiveCount}</span>
+                    <span style={styles.statLabel}>Positive</span>
+                </div>
+                <div style={styles.statItem}>
+                    <span style={styles.statValue}>{neutralCount}</span>
+                    <span style={styles.statLabel}>Neutral</span>
+                </div>
+                <div style={styles.statItem}>
+                    <span style={styles.statValue}>{negativeCount}</span>
+                    <span style={styles.statLabel}>Negative</span>
                 </div>
                 <div style={styles.statItem}>
                     <span style={styles.statValue}>
@@ -247,14 +302,16 @@ const styles = {
     },
     statsBar: {
         display: 'flex',
-        gap: '2rem',
+        flexWrap: 'wrap',
+        gap: '1rem',
         marginBottom: '2rem',
         padding: '1rem',
         backgroundColor: '#F8F9FA',
         borderRadius: '8px'
     },
     statItem: {
-        textAlign: 'center'
+        textAlign: 'center',
+        minWidth: '100px'
     },
     statValue: {
         display: 'block',
@@ -361,10 +418,59 @@ const styles = {
         padding: '2rem',
         textAlign: 'center'
     },
-    loading: {
-        color: '#6c757d',
-        padding: '2rem',
-        textAlign: 'center'
+    skeletonFilter: {
+        height: '36px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px'
+    },
+    skeletonStatValue: {
+        width: '50px',
+        height: '24px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px',
+        margin: '0 auto 8px'
+    },
+    skeletonStatLabel: {
+        width: '80px',
+        height: '16px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px',
+        margin: '0 auto'
+    },
+    skeletonHeader: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '1rem'
+    },
+    skeletonPlatform: {
+        width: '100px',
+        height: '20px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px'
+    },
+    skeletonRating: {
+        width: '80px',
+        height: '20px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px'
+    },
+    skeletonContent: {
+        width: '100%',
+        height: '60px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px',
+        marginBottom: '1rem'
+    },
+    skeletonActions: {
+        display: 'flex',
+        gap: '1rem',
+        marginTop: '1rem'
+    },
+    skeletonButton: {
+        width: '120px',
+        height: '36px',
+        backgroundColor: '#e0e0e0',
+        borderRadius: '4px'
     }
 };
 
