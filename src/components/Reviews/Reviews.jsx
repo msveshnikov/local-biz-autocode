@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
-import { getPlatformIcon, starRating } from '../../utils/theme';
-import { FaRegCommentDots, FaQuoteLeft } from 'react-icons/fa';
+import { useTheme } from '../../App';
+import { useProfessionTheme } from '../../utils/theme';
+import { FaRegCommentDots, FaQuoteLeft, FaStar, FaFilter } from 'react-icons/fa';
+import { getPlatformIcon } from '../../utils/theme';
 
 const ReviewItem = ({ review, onResponseSelect, onConvertTestimonial }) => {
     const [response, setResponse] = useState('');
     const [showResponse, setShowResponse] = useState(false);
     const sentimentColors = { positive: '#28a745', neutral: '#ffc107', negative: '#dc3545' };
+    const { theme: profession } = useTheme();
+    const theme = useProfessionTheme(profession);
 
     return (
-        <div style={styles.reviewCard}>
+        <div style={{ ...styles.reviewCard, borderColor: theme.colors.primary }}>
             <div style={styles.reviewHeader}>
                 <div style={styles.platformInfo}>
                     {getPlatformIcon(review.platform)}
@@ -17,7 +21,16 @@ const ReviewItem = ({ review, onResponseSelect, onConvertTestimonial }) => {
                     </span>
                 </div>
                 <div style={styles.ratingContainer}>
-                    <div style={styles.stars}>{starRating(review.rating)}</div>
+                    <div style={styles.stars}>
+                        {[...Array(5)].map((_, i) => (
+                            <FaStar
+                                key={i}
+                                style={{
+                                    color: i < review.rating ? '#FFC107' : '#e0e0e0'
+                                }}
+                            />
+                        ))}
+                    </div>
                     <span
                         style={{
                             ...styles.sentiment,
@@ -30,18 +43,24 @@ const ReviewItem = ({ review, onResponseSelect, onConvertTestimonial }) => {
             </div>
 
             <p style={styles.reviewContent}>
-                <FaQuoteLeft style={styles.quoteIcon} />
+                <FaQuoteLeft style={{ ...styles.quoteIcon, color: theme.colors.primary }} />
                 {review.content}
             </p>
 
             {review.author && <div style={styles.authorInfo}>- {review.author}</div>}
 
             <div style={styles.actionsContainer}>
-                <button style={styles.actionButton} onClick={() => setShowResponse(!showResponse)}>
+                <button
+                    style={{ ...styles.actionButton, backgroundColor: theme.colors.primary }}
+                    onClick={() => setShowResponse(!showResponse)}
+                >
                     <FaRegCommentDots /> Respond
                 </button>
 
-                <button style={styles.actionButton} onClick={() => onConvertTestimonial(review.id)}>
+                <button
+                    style={{ ...styles.actionButton, backgroundColor: theme.colors.secondary }}
+                    onClick={() => onConvertTestimonial(review.id)}
+                >
                     <FaQuoteLeft /> Convert
                 </button>
             </div>
@@ -67,7 +86,7 @@ const ReviewItem = ({ review, onResponseSelect, onConvertTestimonial }) => {
                         placeholder="Type custom response..."
                     />
                     <button
-                        style={styles.sendButton}
+                        style={{ ...styles.sendButton, backgroundColor: theme.colors.primary }}
                         onClick={() => onResponseSelect(review.id, response)}
                     >
                         Send Response
@@ -82,12 +101,14 @@ const Reviews = () => {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedPlatform, setSelectedPlatform] = useState('all');
+    const [selectedSentiment, setSelectedSentiment] = useState('all');
     const [error, setError] = useState(null);
+    const { theme: profession } = useTheme();
+    const theme = useProfessionTheme(profession);
 
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                // TODO: Replace with actual API call
                 const mockReviews = await import('./mockReviews.json');
                 setReviews(mockReviews.default);
                 setLoading(false);
@@ -118,9 +139,12 @@ const Reviews = () => {
         );
     };
 
-    const filteredReviews = reviews.filter(
-        (review) => selectedPlatform === 'all' || review.platform === selectedPlatform
-    );
+    const filteredReviews = reviews.filter((review) => {
+        const platformMatch = selectedPlatform === 'all' || review.platform === selectedPlatform;
+        const sentimentMatch =
+            selectedSentiment === 'all' || review.sentiment === selectedSentiment;
+        return platformMatch && sentimentMatch;
+    });
 
     if (error) return <div style={styles.error}>Error loading reviews: {error}</div>;
     if (loading) return <div style={styles.loading}>Loading reviews...</div>;
@@ -128,17 +152,34 @@ const Reviews = () => {
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <h2 style={styles.title}>Review Management</h2>
-                <select
-                    style={styles.platformFilter}
-                    value={selectedPlatform}
-                    onChange={(e) => setSelectedPlatform(e.target.value)}
-                >
-                    <option value="all">All Platforms</option>
-                    <option value="yelp">Yelp</option>
-                    <option value="facebook">Facebook</option>
-                    <option value="google">Google</option>
-                </select>
+                <h2 style={{ ...styles.title, color: theme.colors.primary }}>Review Management</h2>
+                <div style={styles.filters}>
+                    <div style={styles.filterGroup}>
+                        <FaFilter style={{ marginRight: '0.5rem' }} />
+                        <select
+                            style={styles.platformFilter}
+                            value={selectedPlatform}
+                            onChange={(e) => setSelectedPlatform(e.target.value)}
+                        >
+                            <option value="all">All Platforms</option>
+                            <option value="google">Google</option>
+                            <option value="yelp">Yelp</option>
+                            <option value="facebook">Facebook</option>
+                        </select>
+                    </div>
+                    <div style={styles.filterGroup}>
+                        <select
+                            style={styles.platformFilter}
+                            value={selectedSentiment}
+                            onChange={(e) => setSelectedSentiment(e.target.value)}
+                        >
+                            <option value="all">All Sentiments</option>
+                            <option value="positive">Positive</option>
+                            <option value="neutral">Neutral</option>
+                            <option value="negative">Negative</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div style={styles.statsBar}>
@@ -188,8 +229,15 @@ const styles = {
     },
     title: {
         fontFamily: "'Poppins', sans-serif",
-        color: '#007BFF',
         margin: 0
+    },
+    filters: {
+        display: 'flex',
+        gap: '1rem'
+    },
+    filterGroup: {
+        display: 'flex',
+        alignItems: 'center'
     },
     platformFilter: {
         padding: '0.5rem',
@@ -211,8 +259,7 @@ const styles = {
     statValue: {
         display: 'block',
         fontFamily: "'Poppins', sans-serif",
-        fontSize: '1.5rem',
-        color: '#007BFF'
+        fontSize: '1.5rem'
     },
     statLabel: {
         fontFamily: "'Open Sans', sans-serif",
@@ -223,7 +270,8 @@ const styles = {
         borderRadius: '8px',
         padding: '1.5rem',
         marginBottom: '1rem',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        borderLeft: '4px solid'
     },
     reviewHeader: {
         display: 'flex',
@@ -246,7 +294,8 @@ const styles = {
         gap: '1rem'
     },
     stars: {
-        color: '#FFC107'
+        display: 'flex',
+        gap: '0.25rem'
     },
     sentiment: {
         padding: '0.25rem 0.5rem',
@@ -260,8 +309,7 @@ const styles = {
         margin: '1rem 0'
     },
     quoteIcon: {
-        marginRight: '0.5rem',
-        color: '#29ABE2'
+        marginRight: '0.5rem'
     },
     authorInfo: {
         fontStyle: 'italic',
@@ -277,7 +325,6 @@ const styles = {
         alignItems: 'center',
         gap: '0.5rem',
         padding: '0.5rem 1rem',
-        backgroundColor: '#007BFF',
         color: 'white',
         border: 'none',
         borderRadius: '4px',
@@ -303,7 +350,6 @@ const styles = {
         fontFamily: "'Open Sans', sans-serif"
     },
     sendButton: {
-        backgroundColor: '#28a745',
         color: 'white',
         padding: '0.5rem 1rem',
         border: 'none',

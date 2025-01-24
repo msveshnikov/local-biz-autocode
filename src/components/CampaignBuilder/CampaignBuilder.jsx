@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCampaign } from '../../context/CampaignContext';
-import { professionThemes } from '../../utils/theme.js';
+import { professionThemes } from '../../utils/theme';
 import { FiAlertCircle } from 'react-icons/fi';
+import { useTheme } from '../../App';
 
 const CampaignBuilder = () => {
     const [currentStep, setCurrentStep] = useState(1);
@@ -18,6 +19,7 @@ const CampaignBuilder = () => {
 
     const { saveCampaign, calculateROI, roiPrediction, isLoading } = useCampaign();
     const navigate = useNavigate();
+    const { setProfession } = useTheme();
 
     const professions = ['legal', 'medical', 'plumbing'];
     const directories = ['Google My Business', 'Yelp', 'Facebook'];
@@ -65,6 +67,7 @@ const CampaignBuilder = () => {
                 directories: selectedDirectories,
                 platforms: selectedPlatforms
             });
+            setProfession(selectedProfession);
             navigate('/dashboard');
         } catch (error) {
             console.error('Campaign submission failed:', error);
