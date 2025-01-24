@@ -1,0 +1,98 @@
+[
+    {
+        "id": 1,
+        "author": "Sarah Johnson",
+        "platform": "Google",
+        "rating": 5,
+        "content": "Excellent service! Our plumbing business saw a 40% increase in leads after using their marketing templates.",
+        "date": "2024-03-15T09:00:00Z",
+        "profession": "plumber",
+        "sentiment": "positive",
+        "responded": false,
+        "featured": true
+    },
+    {
+        "id": 2,
+        "platform": "Yelp",
+        "author": "Michael Chen",
+        "rating": 4,
+        "content": "Good analytics dashboard, but could use more detailed ROI breakdowns for medical practices.",
+        "date": "2024-03-14T14:30:00Z",
+        "profession": "doctor",
+        "sentiment": "neutral",
+        "responded": true,
+        "featured": false
+    },
+    {
+        "id": 3,
+        "author": "Emily Rodriguez",
+        "platform": "Facebook",
+        "rating": 5,
+        "content": "The campaign wizard saved us hours of setup time. Our legal practice acquired 15 new clients last month!",
+        "date": "2024-03-13T16:45:00Z",
+        "profession": "lawyer",
+        "sentiment": "positive",
+        "responded": true,
+        "featured": true
+    },
+    {
+        "id": 4,
+        "author": "David Thompson",
+        "platform": "Google",
+        "rating": 3,
+        "content": "Mobile responsive design needs improvement - some template elements looked distorted on smaller screens.",
+        "date": "2024-03-12T11:20:00Z",
+        "profession": "plumber",
+        "sentiment": "negative",
+        "responded": false,
+        "featured": false
+    },
+    {
+        "id": 5,
+        "author": "Linda Park",
+        "platform": "Yelp",
+        "rating": 4,
+        "content": "Effective social media scheduler, though the content suggestions could be more profession-specific.",
+        "date": "2024-03-11T10:15:00Z",
+        "profession": "doctor",
+        "sentiment": "positive",
+        "responded": false,
+        "featured": true
+    },
+    {
+        "id": 6,
+        "author": "James Wilson",
+        "platform": "Website",
+        "rating": 5,
+        "content": "The review-to-testimonial converter is a game changer! Our conversion rates improved dramatically.",
+        "date": "2024-03-10T08:00:00Z",
+        "profession": "lawyer",
+        "sentiment": "positive",
+        "responded": true,
+        "featured": true
+    },
+    {
+        "id": 7,
+        "author": "Karen Miller",
+        "platform": "Facebook",
+        "rating": 2,
+        "content": "Had issues with API integration for our dental practice. Support response was slow.",
+        "date": "2024-03-09T17:30:00Z",
+        "profession": "doctor",
+        "sentiment": "negative",
+        "responded": false,
+        "featured": false
+    },
+    {
+        "id": 8,
+        "author": "Robert Smith",
+        "platform": "Google",
+        "rating": 4,
+        "content": "Great value for small businesses. The performance dashboard helps us track marketing ROI effectively.",
+        "date": "2024-03-08T13:45:00Z",
+        "profession": "plumber",
+        "sentiment": "positive",
+        "responded": true,
+        "featured": false
+    }
+]
