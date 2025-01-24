@@ -5,6 +5,7 @@ const PROFESSION_MULTIPLIERS = {
     plumbing: 2.8,
     legal: 3.2,
     medical: 2.5,
+    trade: 2.4,
     default: 2.5
 };
 
@@ -16,7 +17,8 @@ const initialState = {
     isLoading: false,
     error: null,
     roiPrediction: null,
-    professionTypes: Object.keys(professionThemes)
+    professionTypes: Object.keys(professionThemes),
+    socialPlatforms: ['google', 'facebook', 'yelp', 'instagram']
 };
 
 const campaignReducer = (state, action) => {
@@ -41,6 +43,16 @@ const campaignReducer = (state, action) => {
             return { ...state, error: action.payload };
         case 'RESET_CURRENT':
             return { ...state, currentCampaign: null };
+        case 'ADD_SOCIAL_PLATFORM':
+            return {
+                ...state,
+                currentCampaign: {
+                    ...state.currentCampaign,
+                    socialPlatforms: [
+                        ...new Set([...state.currentCampaign.socialPlatforms, action.payload])
+                    ]
+                }
+            };
         default:
             return state;
     }
@@ -51,6 +63,7 @@ const CampaignProvider = ({ children }) => {
 
     const loadCampaigns = useCallback(async () => {
         dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'SET_ERROR', payload: null });
         try {
             const response = await fetch('/api/campaigns');
             const data = await response.json();
@@ -68,9 +81,10 @@ const CampaignProvider = ({ children }) => {
         dispatch({ type: 'SET_ROI_PREDICTION', payload: Math.round(roi) });
     }, []);
 
-    const createCampaign = useCallback(
+    const saveCampaign = useCallback(
         async (campaignData) => {
             dispatch({ type: 'SET_LOADING', payload: true });
+            dispatch({ type: 'SET_ERROR', payload: null });
             try {
                 const multiplier =
                     PROFESSION_MULTIPLIERS[campaignData.profession] ||
@@ -85,7 +99,9 @@ const CampaignProvider = ({ children }) => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         ...campaignData,
-                        roiPrediction: Math.round(roi)
+                        roiPrediction: Math.round(roi),
+                        status: 'draft',
+                        created: new Date().toISOString()
                     })
                 });
 
@@ -106,10 +122,10 @@ const CampaignProvider = ({ children }) => {
             ...state,
             dispatch,
             calculateROI,
-            createCampaign,
+            saveCampaign,
             loadCampaigns
         }),
-        [state, calculateROI, createCampaign, loadCampaigns]
+        [state, calculateROI, saveCampaign, loadCampaigns]
     );
 
     return <CampaignContext.Provider value={value}>{children}</CampaignContext.Provider>;

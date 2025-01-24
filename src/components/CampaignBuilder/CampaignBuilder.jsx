@@ -2,19 +2,22 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCampaign } from '../../context/CampaignContext';
 import { professionThemes } from '../../utils/theme.js';
+import { FiAlertCircle } from 'react-icons/fi';
 
 const CampaignBuilder = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [selectedProfession, setSelectedProfession] = useState('');
     const [budget, setBudget] = useState(500);
-    const [includeDirectory, setIncludeDirectory] = useState(false);
-    const [showROITooltip, setShowROITooltip] = useState(false);
-    const [showDirectoryTooltip, setShowDirectoryTooltip] = useState(false);
+    const [selectedDirectories, setSelectedDirectories] = useState([]);
+    const [selectedPlatforms, setSelectedPlatforms] = useState([]);
+    const [showTooltip, setShowTooltip] = useState({ roi: false, directory: false, platform: false });
 
     const { saveCampaign, calculateROI, roiPrediction, isLoading } = useCampaign();
     const navigate = useNavigate();
 
     const professions = ['legal', 'medical', 'plumbing'];
+    const directories = ['Google My Business', 'Yelp', 'Facebook'];
+    const platforms = ['Facebook', 'Instagram', 'Google Ads'];
     const ctaLabels = {
         legal: 'Publish Legal Campaign',
         medical: 'Launch Medical Campaign',
@@ -37,13 +40,30 @@ const CampaignBuilder = () => {
         setCurrentStep((prev) => prev - 1);
     };
 
+    const handleDirectoryToggle = (directory) => {
+        setSelectedDirectories(prev =>
+            prev.includes(directory)
+                ? prev.filter(d => d !== directory)
+                : [...prev, directory]
+        );
+    };
+
+    const handlePlatformToggle = (platform) => {
+        setSelectedPlatforms(prev =>
+            prev.includes(platform)
+                ? prev.filter(p => p !== platform)
+                : [...prev, platform]
+        );
+    };
+
     const handleSubmit = async () => {
         try {
             await saveCampaign({
                 profession: selectedProfession,
                 budget,
                 roiPrediction,
-                includeDirectory
+                directories: selectedDirectories,
+                platforms: selectedPlatforms
             });
             navigate('/dashboard');
         } catch (error) {
@@ -54,26 +74,15 @@ const CampaignBuilder = () => {
     const theme = professionThemes[selectedProfession] || professionThemes.default;
 
     return (
-        <div
-            className="campaign-builder"
-            style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}
-        >
-            <div
-                className="step-indicator"
-                style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px' }}
-            >
-                {[1, 2, 3].map((step) => (
+        <div className="campaign-builder container">
+            <div className="step-indicator metric-card">
+                {[1, 2, 3, 4].map((step) => (
                     <div
                         key={step}
+                        className="step-circle"
                         style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '50%',
-                            background: currentStep >= step ? theme.colors.primary : '#ccc',
-                            color: 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
+                            background: currentStep >= step ? theme.colors.primary : '#e0e0e0',
+                            color: currentStep >= step ? 'white' : '#333'
                         }}
                     >
                         {step}
@@ -82,31 +91,16 @@ const CampaignBuilder = () => {
             </div>
 
             {currentStep === 1 && (
-                <div className="profession-select">
+                <div className="profession-select metric-card">
                     <h2 style={{ color: theme.colors.primary }}>Select Your Profession</h2>
-                    <div
-                        className="profession-buttons"
-                        style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-                            gap: '10px'
-                        }}
-                    >
+                    <div className="profession-buttons">
                         {professions.map((profession) => (
                             <button
                                 key={profession}
                                 onClick={() => setSelectedProfession(profession)}
                                 style={{
-                                    background:
-                                        selectedProfession === profession
-                                            ? theme.colors.primary
-                                            : '#f0f0f0',
-                                    color: selectedProfession === profession ? 'white' : '#333',
-                                    padding: '15px 10px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s ease'
+                                    background: selectedProfession === profession ? theme.colors.primary : '#f0f0f0',
+                                    color: selectedProfession === profession ? 'white' : '#333'
                                 }}
                             >
                                 {profession.charAt(0).toUpperCase() + profession.slice(1)}
@@ -117,9 +111,9 @@ const CampaignBuilder = () => {
             )}
 
             {currentStep === 2 && (
-                <div className="budget-section">
-                    <h2 style={{ color: theme.colors.primary }}>Set Your Budget</h2>
-                    <div style={{ margin: '20px 0' }}>
+                <div className="budget-section metric-card">
+                    <h2 style={{ color: theme.colors.primary }}>Budget Planning</h2>
+                    <div className="budget-input">
                         <label>
                             Monthly Budget: ${budget}
                             <input
@@ -128,71 +122,20 @@ const CampaignBuilder = () => {
                                 max="5000"
                                 value={budget}
                                 onChange={(e) => setBudget(Number(e.target.value))}
-                                style={{ width: '100%', margin: '10px 0' }}
                             />
                         </label>
                     </div>
-                    <div style={{ margin: '20px 0', position: 'relative' }}>
+                    <div className="roi-prediction">
                         <p
-                            onMouseEnter={() => setShowROITooltip(true)}
-                            onMouseLeave={() => setShowROITooltip(false)}
-                            style={{ cursor: 'help' }}
+                            onMouseEnter={() => setShowTooltip({ ...showTooltip, roi: true })}
+                            onMouseLeave={() => setShowTooltip({ ...showTooltip, roi: false })}
                         >
                             Predicted ROI: {roiPrediction}%
-                            <span style={{ fontSize: '0.8em', color: '#666', marginLeft: '8px' }}>
-                                (Based on average performance for {selectedProfession} services)
-                            </span>
+                            <FiAlertCircle className="tooltip-icon" />
                         </p>
-                        {showROITooltip && (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '100%',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    backgroundColor: '#333',
-                                    color: '#fff',
-                                    padding: '8px',
-                                    borderRadius: '4px',
-                                    fontSize: '0.9em',
-                                    whiteSpace: 'nowrap',
-                                    zIndex: 100
-                                }}
-                            >
+                        {showTooltip.roi && (
+                            <div className="tooltip">
                                 Estimated return based on historical data for your profession
-                            </div>
-                        )}
-                    </div>
-                    <div className="directory-integration" style={{ position: 'relative' }}>
-                        <label
-                            onMouseEnter={() => setShowDirectoryTooltip(true)}
-                            onMouseLeave={() => setShowDirectoryTooltip(false)}
-                            style={{ cursor: 'help' }}
-                        >
-                            <input
-                                type="checkbox"
-                                checked={includeDirectory}
-                                onChange={(e) => setIncludeDirectory(e.target.checked)}
-                                style={{ marginRight: '8px' }}
-                            />
-                            Include in Local Business Directory (+15% reach)
-                        </label>
-                        {showDirectoryTooltip && (
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '100%',
-                                    left: '0',
-                                    backgroundColor: '#333',
-                                    color: '#fff',
-                                    padding: '8px',
-                                    borderRadius: '4px',
-                                    fontSize: '0.9em',
-                                    whiteSpace: 'nowrap',
-                                    zIndex: 100
-                                }}
-                            >
-                                Automatic listing in partner directories for increased visibility
                             </div>
                         )}
                     </div>
@@ -200,49 +143,82 @@ const CampaignBuilder = () => {
             )}
 
             {currentStep === 3 && (
-                <div className="confirmation">
-                    <h2 style={{ color: theme.colors.primary }}>Confirm Your Campaign</h2>
-                    <div style={{ margin: '20px 0' }}>
-                        <p>Profession: {selectedProfession}</p>
-                        <p>Budget: ${budget}/month</p>
-                        <p>ROI Prediction: {roiPrediction}%</p>
-                        <p>Directory Inclusion: {includeDirectory ? 'Yes' : 'No'}</p>
+                <div className="distribution-section metric-card">
+                    <h2 style={{ color: theme.colors.primary }}>Distribution Channels</h2>
+                    <div className="directory-integration">
+                        <h3>Local Directories</h3>
+                        <div className="directory-grid">
+                            {directories.map((directory) => (
+                                <label
+                                    key={directory}
+                                    className="directory-item"
+                                    onMouseEnter={() => setShowTooltip({ ...showTooltip, directory: true })}
+                                    onMouseLeave={() => setShowTooltip({ ...showTooltip, directory: false })}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedDirectories.includes(directory)}
+                                        onChange={() => handleDirectoryToggle(directory)}
+                                    />
+                                    {directory}
+                                    {showTooltip.directory && (
+                                        <div className="tooltip">Increase local visibility through {directory}</div>
+                                    )}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="platform-integration">
+                        <h3>Social Platforms</h3>
+                        <div className="platform-grid">
+                            {platforms.map((platform) => (
+                                <label
+                                    key={platform}
+                                    className="platform-item"
+                                    onMouseEnter={() => setShowTooltip({ ...showTooltip, platform: true })}
+                                    onMouseLeave={() => setShowTooltip({ ...showTooltip, platform: false })}
+                                >
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedPlatforms.includes(platform)}
+                                        onChange={() => handlePlatformToggle(platform)}
+                                    />
+                                    {platform}
+                                    {showTooltip.platform && (
+                                        <div className="tooltip">Automatically publish to {platform}</div>
+                                    )}
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
 
-            <div
-                className="navigation-buttons"
-                style={{ display: 'flex', justifyContent: 'space-between', marginTop: '40px' }}
-            >
+            {currentStep === 4 && (
+                <div className="confirmation metric-card">
+                    <h2 style={{ color: theme.colors.primary }}>Campaign Summary</h2>
+                    <div className="summary-details">
+                        <p>Profession: <strong>{selectedProfession}</strong></p>
+                        <p>Monthly Budget: <strong>${budget}</strong></p>
+                        <p>ROI Prediction: <strong>{roiPrediction}%</strong></p>
+                        <p>Directories: <strong>{selectedDirectories.join(', ') || 'None'}</strong></p>
+                        <p>Platforms: <strong>{selectedPlatforms.join(', ') || 'None'}</strong></p>
+                    </div>
+                </div>
+            )}
+
+            <div className="navigation-buttons">
                 {currentStep > 1 && (
-                    <button
-                        onClick={handleBack}
-                        style={{
-                            background: '#666',
-                            color: 'white',
-                            padding: '10px 25px',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer'
-                        }}
-                    >
+                    <button onClick={handleBack} className="btn-secondary">
                         Back
                     </button>
                 )}
-
-                {currentStep < 3 ? (
+                {currentStep < 4 ? (
                     <button
                         onClick={handleNext}
                         disabled={!selectedProfession}
                         style={{
                             background: theme.colors.primary,
-                            color: 'white',
-                            padding: '10px 25px',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer',
-                            marginLeft: 'auto',
                             opacity: !selectedProfession ? 0.6 : 1
                         }}
                     >
@@ -252,18 +228,9 @@ const CampaignBuilder = () => {
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        style={{
-                            background: isLoading ? '#999' : theme.colors.primary,
-                            color: 'white',
-                            padding: '10px 25px',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: isLoading ? 'not-allowed' : 'pointer'
-                        }}
+                        style={{ background: isLoading ? '#999' : theme.colors.primary }}
                     >
-                        {isLoading
-                            ? 'Submitting...'
-                            : ctaLabels[selectedProfession] || ctaLabels.default}
+                        {isLoading ? 'Submitting...' : ctaLabels[selectedProfession] || ctaLabels.default}
                     </button>
                 )}
             </div>

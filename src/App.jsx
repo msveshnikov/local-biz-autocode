@@ -8,6 +8,7 @@ const ThemeContext = createContext();
 const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
 const CampaignBuilder = lazy(() => import('./components/CampaignBuilder/CampaignBuilder'));
 const Templates = lazy(() => import('./components/Templates/Templates'));
+const Reviews = lazy(() => import('./components/Reviews/Reviews'));
 
 export function useTheme() {
     return useContext(ThemeContext);
@@ -32,6 +33,9 @@ function Navigation() {
                     </Link>
                     <Link to="/campaign" style={{ color: theme.colors.background }}>
                         Campaign Wizard
+                    </Link>
+                    <Link to="/reviews" style={{ color: theme.colors.background }}>
+                        Reviews
                     </Link>
                 </div>
             </div>
@@ -86,6 +90,7 @@ function App() {
                                     <Route path="/dashboard" element={<Dashboard />} />
                                     <Route path="/templates" element={<Templates />} />
                                     <Route path="/campaign" element={<CampaignBuilder />} />
+                                    <Route path="/reviews" element={<Reviews />} />
                                     <Route path="/" element={<HomeHero />} />
                                 </Routes>
                             </Suspense>

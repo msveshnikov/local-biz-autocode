@@ -1,4 +1,3 @@
-````markdown
 # LocalBiz Marketing Platform Documentation
 
 ## Project Overview
@@ -39,7 +38,6 @@ const CampaignWizard = () => {
     // Wizard steps implementation
 };
 ```
-````
 
 **Data Flow**:
 
@@ -228,10 +226,5 @@ release/  - Version preparation
 
 ---
 
-> **Documentation Version**: 1.2.0  
-> **Last Updated**: 2024-02-15  
-> **Maintainer**: Platform Engineering Team
-
-```
-
-```
+> **Documentation Version**: 1.2.0 **Last Updated**: 2024-02-15 **Maintainer**: Platform Engineering
+> Team

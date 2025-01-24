@@ -33,6 +33,9 @@ const CustomTooltip = ({ active, payload, label, explanation }) => {
             <p className="tooltip-value">
                 {payload[0].name}: {payload[0].value}
             </p>
+            {payload[0].payload.cost && (
+                <p className="tooltip-cost">Total Cost: ${payload[0].payload.cost}</p>
+            )}
             <p className="tooltip-explanation">{explanation}</p>
         </div>
     );
@@ -66,6 +69,11 @@ const Dashboard = () => {
                         { week: 'W1', cost: 2400, revenue: 4000 },
                         { week: 'W2', cost: 2100, revenue: 3800 },
                         { week: 'W3', cost: 2600, revenue: 4300 }
+                    ],
+                    acquisitionCost: [
+                        { channel: 'Google Ads', cost: 120, leads: 45, cpa: 2.67 },
+                        { channel: 'Facebook', cost: 90, leads: 30, cpa: 3.0 },
+                        { channel: 'Yelp', cost: 75, leads: 25, cpa: 3.0 }
                     ]
                 };
                 setDashboardData(mockData);
@@ -81,9 +89,55 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="dashboard-loading">
-                <div className="loading-spinner"></div>
-                <p>Loading analytics data...</p>
+            <div className="dashboard-container">
+                <div className="dashboard-header">
+                    <div
+                        style={{
+                            width: '300px',
+                            height: '32px',
+                            backgroundColor: '#e0e0e0',
+                            borderRadius: '4px'
+                        }}
+                    />
+                    <div
+                        style={{
+                            width: '150px',
+                            height: '40px',
+                            backgroundColor: '#e0e0e0',
+                            borderRadius: '4px'
+                        }}
+                    />
+                </div>
+                <div className="metrics-grid">
+                    {[1, 2, 3, 4].map((i) => (
+                        <div
+                            key={i}
+                            className="metric-card"
+                            style={{
+                                backgroundColor: '#f5f5f5',
+                                padding: '1.5rem',
+                                borderRadius: '8px'
+                            }}
+                        >
+                            <div
+                                style={{
+                                    width: '60%',
+                                    height: '24px',
+                                    backgroundColor: '#e0e0e0',
+                                    marginBottom: '1rem',
+                                    borderRadius: '4px'
+                                }}
+                            />
+                            <div
+                                style={{
+                                    height: '300px',
+                                    backgroundColor: '#e0e0e0',
+                                    borderRadius: '4px'
+                                }}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         );
     }
@@ -180,6 +234,27 @@ const Dashboard = () => {
                                         stroke="#FF6B6B"
                                     />
                                 </AreaChart>
+                            </ResponsiveContainer>
+                        </Suspense>
+                    </div>
+                </div>
+
+                <div className="metric-card">
+                    <h3>Client Acquisition Cost</h3>
+                    <div className="chart-container">
+                        <Suspense fallback={<div className="chart-loading" />}>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={dashboardData.acquisitionCost}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="channel" />
+                                    <YAxis />
+                                    <Tooltip
+                                        content={
+                                            <CustomTooltip explanation="Client acquisition cost per lead by marketing channel" />
+                                        }
+                                    />
+                                    <Bar dataKey="cpa" fill={primaryColor} />
+                                </BarChart>
                             </ResponsiveContainer>
                         </Suspense>
                     </div>
