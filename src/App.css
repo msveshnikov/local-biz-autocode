@@ -3,21 +3,6 @@
     --border-radius: 8px;
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
-    --primary: #007bff;
-    --secondary: #ffc107;
-    --accent: #29abe2;
-    --background: #f8f9fa;
-    --text: #2d3748;
-    --surface: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #1a202c;
-        --text: #e2e8f0;
-        --surface: #2d3748;
-        --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Open+Sans:wght@400;500&family=Montserrat:wght@500&display=swap');
@@ -31,8 +16,6 @@
 body {
     font-family: 'Open Sans', system-ui, sans-serif;
     line-height: 1.6;
-    color: var(--text);
-    background-color: var(--background);
 }
 
 h1,
@@ -59,7 +42,6 @@ h6 {
 }
 
 .navbar {
-    background: var(--surface);
     box-shadow: var(--shadow);
     padding: 1rem 0;
     position: sticky;
@@ -75,7 +57,6 @@ h6 {
 
 .nav-links a {
     text-decoration: none;
-    color: inherit;
     transition: var(--transition);
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -89,12 +70,10 @@ h6 {
 .hero {
     text-align: center;
     padding: 4rem 1rem;
-    background: linear-gradient(135deg, var(--background) 0%, #e9ecef 100%);
 }
 
 .dashboard-container {
     padding: 2rem;
-    background: var(--surface);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
 }
@@ -107,7 +86,6 @@ h6 {
 }
 
 .metric-card {
-    background: var(--surface);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -120,7 +98,12 @@ h6 {
 }
 
 .loading-skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.05) 25%,
+        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.05) 75%
+    );
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s infinite;
     border-radius: var(--border-radius);
@@ -136,7 +119,6 @@ h6 {
 }
 
 .custom-tooltip {
-    background: var(--surface);
     padding: 1rem;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -149,7 +131,6 @@ h6 {
 }
 
 .campaign-builder {
-    background: var(--surface);
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -180,14 +161,11 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 20px;
     height: 20px;
-    background: var(--primary);
     border-radius: 50%;
     cursor: pointer;
 }
 
 .app-footer {
-    background: var(--surface);
-    color: var(--text);
     padding: 2rem 0;
     margin-top: auto;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);

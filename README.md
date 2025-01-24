@@ -164,3 +164,7 @@ https://localbiz-deepseek.netlify.app/
 - Component States
 - Animation Principles
 - Iconography Style
+
+# TODO
+
+- fix bugs, make UI awesome!!

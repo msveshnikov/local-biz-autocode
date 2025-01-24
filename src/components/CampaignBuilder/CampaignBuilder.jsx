@@ -10,7 +10,11 @@ const CampaignBuilder = () => {
     const [budget, setBudget] = useState(500);
     const [selectedDirectories, setSelectedDirectories] = useState([]);
     const [selectedPlatforms, setSelectedPlatforms] = useState([]);
-    const [showTooltip, setShowTooltip] = useState({ roi: false, directory: false, platform: false });
+    const [showTooltip, setShowTooltip] = useState({
+        roi: false,
+        directory: false,
+        platform: false
+    });
 
     const { saveCampaign, calculateROI, roiPrediction, isLoading } = useCampaign();
     const navigate = useNavigate();
@@ -41,18 +45,14 @@ const CampaignBuilder = () => {
     };
 
     const handleDirectoryToggle = (directory) => {
-        setSelectedDirectories(prev =>
-            prev.includes(directory)
-                ? prev.filter(d => d !== directory)
-                : [...prev, directory]
+        setSelectedDirectories((prev) =>
+            prev.includes(directory) ? prev.filter((d) => d !== directory) : [...prev, directory]
         );
     };
 
     const handlePlatformToggle = (platform) => {
-        setSelectedPlatforms(prev =>
-            prev.includes(platform)
-                ? prev.filter(p => p !== platform)
-                : [...prev, platform]
+        setSelectedPlatforms((prev) =>
+            prev.includes(platform) ? prev.filter((p) => p !== platform) : [...prev, platform]
         );
     };
 
@@ -99,7 +99,10 @@ const CampaignBuilder = () => {
                                 key={profession}
                                 onClick={() => setSelectedProfession(profession)}
                                 style={{
-                                    background: selectedProfession === profession ? theme.colors.primary : '#f0f0f0',
+                                    background:
+                                        selectedProfession === profession
+                                            ? theme.colors.primary
+                                            : '#f0f0f0',
                                     color: selectedProfession === profession ? 'white' : '#333'
                                 }}
                             >
@@ -152,8 +155,12 @@ const CampaignBuilder = () => {
                                 <label
                                     key={directory}
                                     className="directory-item"
-                                    onMouseEnter={() => setShowTooltip({ ...showTooltip, directory: true })}
-                                    onMouseLeave={() => setShowTooltip({ ...showTooltip, directory: false })}
+                                    onMouseEnter={() =>
+                                        setShowTooltip({ ...showTooltip, directory: true })
+                                    }
+                                    onMouseLeave={() =>
+                                        setShowTooltip({ ...showTooltip, directory: false })
+                                    }
                                 >
                                     <input
                                         type="checkbox"
@@ -162,7 +169,9 @@ const CampaignBuilder = () => {
                                     />
                                     {directory}
                                     {showTooltip.directory && (
-                                        <div className="tooltip">Increase local visibility through {directory}</div>
+                                        <div className="tooltip">
+                                            Increase local visibility through {directory}
+                                        </div>
                                     )}
                                 </label>
                             ))}
@@ -175,8 +184,12 @@ const CampaignBuilder = () => {
                                 <label
                                     key={platform}
                                     className="platform-item"
-                                    onMouseEnter={() => setShowTooltip({ ...showTooltip, platform: true })}
-                                    onMouseLeave={() => setShowTooltip({ ...showTooltip, platform: false })}
+                                    onMouseEnter={() =>
+                                        setShowTooltip({ ...showTooltip, platform: true })
+                                    }
+                                    onMouseLeave={() =>
+                                        setShowTooltip({ ...showTooltip, platform: false })
+                                    }
                                 >
                                     <input
                                         type="checkbox"
@@ -185,7 +198,9 @@ const CampaignBuilder = () => {
                                     />
                                     {platform}
                                     {showTooltip.platform && (
-                                        <div className="tooltip">Automatically publish to {platform}</div>
+                                        <div className="tooltip">
+                                            Automatically publish to {platform}
+                                        </div>
                                     )}
                                 </label>
                             ))}
@@ -198,11 +213,21 @@ const CampaignBuilder = () => {
                 <div className="confirmation metric-card">
                     <h2 style={{ color: theme.colors.primary }}>Campaign Summary</h2>
                     <div className="summary-details">
-                        <p>Profession: <strong>{selectedProfession}</strong></p>
-                        <p>Monthly Budget: <strong>${budget}</strong></p>
-                        <p>ROI Prediction: <strong>{roiPrediction}%</strong></p>
-                        <p>Directories: <strong>{selectedDirectories.join(', ') || 'None'}</strong></p>
-                        <p>Platforms: <strong>{selectedPlatforms.join(', ') || 'None'}</strong></p>
+                        <p>
+                            Profession: <strong>{selectedProfession}</strong>
+                        </p>
+                        <p>
+                            Monthly Budget: <strong>${budget}</strong>
+                        </p>
+                        <p>
+                            ROI Prediction: <strong>{roiPrediction}%</strong>
+                        </p>
+                        <p>
+                            Directories: <strong>{selectedDirectories.join(', ') || 'None'}</strong>
+                        </p>
+                        <p>
+                            Platforms: <strong>{selectedPlatforms.join(', ') || 'None'}</strong>
+                        </p>
                     </div>
                 </div>
             )}
@@ -230,7 +255,9 @@ const CampaignBuilder = () => {
                         disabled={isLoading}
                         style={{ background: isLoading ? '#999' : theme.colors.primary }}
                     >
-                        {isLoading ? 'Submitting...' : ctaLabels[selectedProfession] || ctaLabels.default}
+                        {isLoading
+                            ? 'Submitting...'
+                            : ctaLabels[selectedProfession] || ctaLabels.default}
                     </button>
                 )}
             </div>
