@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, lazy, Suspense } from 'react';
+import { createContext, useState, useContext, lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { CampaignProvider } from './context/CampaignContext';
 import { useTheme as useProfessionTheme } from './utils/theme';
@@ -77,10 +77,15 @@ function HomeHero() {
 
 function App() {
     const [profession, setProfession] = useState('default');
+    const [darkMode, setDarkMode] = useState(false);
+
+    useEffect(() => {
+        document.body.classList.toggle('dark-mode', darkMode);
+    }, [darkMode]);
 
     return (
         <CampaignProvider>
-            <ThemeContext.Provider value={{ profession, setProfession }}>
+            <ThemeContext.Provider value={{ profession, setProfession, darkMode, setDarkMode }}>
                 <BrowserRouter>
                     <div className="app-container">
                         <Navigation />
@@ -104,6 +109,17 @@ function App() {
                                 <div className="footer-links">
                                     <Link to="/privacy">Privacy Policy</Link>
                                     <Link to="/terms">Terms of Service</Link>
+                                    <button
+                                        onClick={() => setDarkMode(!darkMode)}
+                                        style={{
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            // color: theme.colors.text,
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        {darkMode ? 'Light Mode' : 'Dark Mode'}
+                                    </button>
                                 </div>
                             </div>
                         </footer>
