@@ -114,7 +114,6 @@ function App() {
                                         style={{
                                             backgroundColor: 'transparent',
                                             border: 'none',
-                                            // color: theme.colors.text,
                                             cursor: 'pointer'
                                         }}
                                     >

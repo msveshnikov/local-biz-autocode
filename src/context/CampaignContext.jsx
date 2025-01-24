@@ -18,7 +18,17 @@ const initialState = {
     error: null,
     roiPrediction: null,
     professionTypes: Object.keys(professionThemes),
-    socialPlatforms: ['google', 'facebook', 'yelp', 'instagram']
+    socialPlatforms: ['google', 'facebook', 'yelp', 'instagram'],
+    reviewStats: {
+        totalReviews: 0,
+        averageRating: 0,
+        sentimentAnalysis: {}
+    },
+    campaignPerformance: {
+        leadsGenerated: 0,
+        costPerLead: 0,
+        revenueGenerated: 0
+    }
 };
 
 const campaignReducer = (state, action) => {
@@ -52,6 +62,16 @@ const campaignReducer = (state, action) => {
                         ...new Set([...state.currentCampaign.socialPlatforms, action.payload])
                     ]
                 }
+            };
+        case 'SET_REVIEW_STATS':
+            return {
+                ...state,
+                reviewStats: action.payload
+            };
+        case 'SET_CAMPAIGN_PERFORMANCE':
+            return {
+                ...state,
+                campaignPerformance: action.payload
             };
         default:
             return state;
@@ -117,15 +137,45 @@ const CampaignProvider = ({ children }) => {
         [loadCampaigns]
     );
 
+    const loadReviewStats = useCallback(async () => {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'SET_ERROR', payload: null });
+        try {
+            const response = await fetch('/api/reviews/stats');
+            const data = await response.json();
+            dispatch({ type: 'SET_REVIEW_STATS', payload: data });
+        } catch (error) {
+            dispatch({ type: 'SET_ERROR', payload: error.message });
+        } finally {
+            dispatch({ type: 'SET_LOADING', payload: false });
+        }
+    }, []);
+
+    const loadCampaignPerformance = useCallback(async (campaignId) => {
+        dispatch({ type: 'SET_LOADING', payload: true });
+        dispatch({ type: 'SET_ERROR', payload: null });
+        try {
+            const response = await fetch(`/api/campaigns/${campaignId}/performance`);
+            const data = await response.json();
+            dispatch({ type: 'SET_CAMPAIGN_PERFORMANCE', payload: data });
+        } catch (error) {
+            dispatch({ type: 'SET_ERROR', payload: error.message });
+        } finally {
+            dispatch({ type: 'SET_LOADING', payload: false });
+        }
+    }, []);
+
     const value = useMemo(
         () => ({
             ...state,
             dispatch,
             calculateROI,
             saveCampaign,
-            loadCampaigns
+            loadCampaigns,
+            loadReviewStats,
+            loadCampaignPerformance
         }),
-        [state, calculateROI, saveCampaign, loadCampaigns]
+        [state, calculateROI, saveCampaign, loadCampaigns, loadReviewStats, loadCampaignPerformance]
     );
 
     return <CampaignContext.Provider value={value}>{children}</CampaignContext.Provider>;

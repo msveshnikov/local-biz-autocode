@@ -166,5 +166,3 @@ https://localbiz-deepseek.netlify.app/
 - Iconography Style
 
 # TODO
-
-- fix bugs, make UI awesome!!
