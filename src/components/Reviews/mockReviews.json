@@ -9,7 +9,19 @@
         "profession": "plumber",
         "sentiment": "positive",
         "responded": false,
-        "featured": true
+        "featured": true,
+        "responseTemplates": [
+            {
+                "id": "tpl-1",
+                "name": "Thank You Template",
+                "content": "Thank you for your feedback! We're thrilled to hear about your success."
+            },
+            {
+                "id": "tpl-2",
+                "name": "Follow-up Template",
+                "content": "We appreciate your review! Let us know if there's anything else we can do to help your business grow."
+            }
+        ]
     },
     {
         "id": 2,
@@ -21,7 +33,14 @@
         "profession": "doctor",
         "sentiment": "neutral",
         "responded": true,
-        "featured": false
+        "featured": false,
+        "responseTemplates": [
+            {
+                "id": "tpl-3",
+                "name": "Feature Request Template",
+                "content": "Thank you for your suggestion! We're always working to improve our analytics features."
+            }
+        ]
     },
     {
         "id": 3,
@@ -33,7 +52,14 @@
         "profession": "lawyer",
         "sentiment": "positive",
         "responded": true,
-        "featured": true
+        "featured": true,
+        "responseTemplates": [
+            {
+                "id": "tpl-4",
+                "name": "Success Template",
+                "content": "We're so happy to hear about your success! Keep up the great work with your campaigns."
+            }
+        ]
     },
     {
         "id": 4,
@@ -45,7 +71,14 @@
         "profession": "plumber",
         "sentiment": "negative",
         "responded": false,
-        "featured": false
+        "featured": false,
+        "responseTemplates": [
+            {
+                "id": "tpl-5",
+                "name": "Issue Resolution Template",
+                "content": "Thank you for bringing this to our attention. Our team is working on improving mobile responsiveness."
+            }
+        ]
     },
     {
         "id": 5,
@@ -57,7 +90,14 @@
         "profession": "doctor",
         "sentiment": "positive",
         "responded": false,
-        "featured": true
+        "featured": true,
+        "responseTemplates": [
+            {
+                "id": "tpl-6",
+                "name": "Improvement Template",
+                "content": "We appreciate your feedback! We're enhancing our content suggestions to be more tailored to specific professions."
+            }
+        ]
     },
     {
         "id": 6,
@@ -69,7 +109,14 @@
         "profession": "lawyer",
         "sentiment": "positive",
         "responded": true,
-        "featured": true
+        "featured": true,
+        "responseTemplates": [
+            {
+                "id": "tpl-7",
+                "name": "Feature Appreciation Template",
+                "content": "We're thrilled that you're finding value in our testimonial converter feature!"
+            }
+        ]
     },
     {
         "id": 7,
@@ -81,7 +128,14 @@
         "profession": "doctor",
         "sentiment": "negative",
         "responded": false,
-        "featured": false
+        "featured": false,
+        "responseTemplates": [
+            {
+                "id": "tpl-8",
+                "name": "Support Template",
+                "content": "We apologize for the inconvenience. Our support team is investigating the API integration issue."
+            }
+        ]
     },
     {
         "id": 8,
@@ -93,6 +147,13 @@
         "profession": "plumber",
         "sentiment": "positive",
         "responded": true,
-        "featured": false
+        "featured": false,
+        "responseTemplates": [
+            {
+                "id": "tpl-9",
+                "name": "Appreciation Template",
+                "content": "Thank you for your kind words! We're glad our dashboard is helping you track your marketing success."
+            }
+        ]
     }
 ]

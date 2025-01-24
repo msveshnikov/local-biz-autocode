@@ -2,6 +2,7 @@ import { createContext, useState, useContext, lazy, Suspense, useEffect } from '
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { CampaignProvider } from './context/CampaignContext';
 import { useTheme as useProfessionTheme } from './utils/theme';
+import './App.css';
 
 const ThemeContext = createContext();
 

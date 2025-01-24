@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useTheme } from '../../App';
 import { useProfessionTheme } from '../../utils/theme';
 import { useCampaign } from '../../context/CampaignContext';
+import { FiEdit, FiHistory, FiEye } from 'react-icons/fi';
 
 const TemplateGrid = styled.div`
     display: grid;
@@ -63,7 +64,30 @@ const TemplateImage = styled.div`
     color: ${(props) => props.theme.colors.primary};
 `;
 
-const TemplateItem = ({ title, description, cta, version, theme }) => {
+const TemplateActions = styled.div`
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+`;
+
+const ActionButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: ${(props) => props.theme.colors.secondary};
+    color: ${(props) => props.theme.colors.background};
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        opacity: 0.9;
+    }
+`;
+
+const TemplateItem = ({ title, description, cta, version, theme, onEdit, onHistory, onPreview }) => {
     const { setCurrentStep } = useCampaign();
 
     return (
@@ -77,22 +101,17 @@ const TemplateItem = ({ title, description, cta, version, theme }) => {
             </TemplateImage>
             <TemplateContent theme={theme}>
                 <p>{description}</p>
-                <button
-                    onClick={() => setCurrentStep(1)}
-                    style={{
-                        backgroundColor: theme.colors.secondary,
-                        color: theme.colors.background,
-                        padding: '0.75rem 1.5rem',
-                        border: 'none',
-                        borderRadius: '4px',
-                        marginTop: '1rem',
-                        cursor: 'pointer',
-                        width: '100%',
-                        transition: 'all 0.2s ease'
-                    }}
-                >
-                    {cta}
-                </button>
+                <TemplateActions>
+                    <ActionButton theme={theme} onClick={onEdit}>
+                        <FiEdit /> Customize
+                    </ActionButton>
+                    <ActionButton theme={theme} onClick={onHistory}>
+                        <FiHistory /> Versions
+                    </ActionButton>
+                    <ActionButton theme={theme} onClick={onPreview}>
+                        <FiEye /> Preview
+                    </ActionButton>
+                </TemplateActions>
             </TemplateContent>
         </TemplatePreview>
     );
@@ -149,6 +168,18 @@ export default function Templates() {
     const theme = useProfessionTheme(validProfession);
     const [loading, setLoading] = useState(true);
 
+    const handleEdit = (template) => {
+        console.log('Editing template:', template);
+    };
+
+    const handleHistory = (template) => {
+        console.log('Viewing history for:', template);
+    };
+
+    const handlePreview = (template) => {
+        console.log('Previewing template:', template);
+    };
+
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 500);
         return () => clearTimeout(timer);
@@ -192,7 +223,14 @@ export default function Templates() {
     return (
         <TemplateGrid>
             {templates[validProfession].map((template, index) => (
-                <TemplateItem key={index} {...template} theme={theme} />
+                <TemplateItem
+                    key={index}
+                    {...template}
+                    theme={theme}
+                    onEdit={() => handleEdit(template)}
+                    onHistory={() => handleHistory(template)}
+                    onPreview={() => handlePreview(template)}
+                />
             ))}
         </TemplateGrid>
     );
