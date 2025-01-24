@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useTheme } from '../../App';
-import { useTheme as useProfessionTheme } from '../../utils/theme';
+import { useProfessionTheme } from '../../utils/theme';
 
 const TemplateGrid = styled.div`
     display: grid;
@@ -17,6 +17,7 @@ const TemplatePreview = styled.div`
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+    cursor: pointer;
     &:hover {
         transform: translateY(-4px);
     }
@@ -44,11 +45,13 @@ const TemplateItem = ({ title, description, cta, theme }) => {
                 <p>{description}</p>
                 <button
                     style={{
-                        backgroundColor: theme.colors.accent,
-                        color: theme.colors.text,
+                        backgroundColor: theme.colors.primary,
+                        color: theme.colors.background,
                         padding: '0.5rem 1rem',
                         border: 'none',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
+                        marginTop: '1rem',
+                        cursor: 'pointer'
                     }}
                 >
                     {cta}
@@ -64,6 +67,11 @@ const templates = {
             title: 'Legal Consultation Landing',
             description: 'Professional template for legal services with case review CTA',
             cta: 'Schedule Consultation'
+        },
+        {
+            title: 'Case Evaluation Page',
+            description: 'Detailed case analysis template with document upload',
+            cta: 'Start Evaluation'
         }
     ],
     medical: [
@@ -71,6 +79,11 @@ const templates = {
             title: 'Medical Practice Homepage',
             description: 'Trust-building design for healthcare providers',
             cta: 'Book Appointment'
+        },
+        {
+            title: 'Patient Portal Template',
+            description: 'Secure patient login and appointment management',
+            cta: 'View Portal'
         }
     ],
     plumbing: [
@@ -78,12 +91,17 @@ const templates = {
             title: 'Emergency Service Page',
             description: 'Urgent-service focused layout for tradespeople',
             cta: 'Call Now'
+        },
+        {
+            title: 'Maintenance Services',
+            description: 'Preventative maintenance plans presentation',
+            cta: 'Schedule Checkup'
         }
     ]
 };
 
 export default function Templates() {
-    const { theme: profession } = useTheme();
+    const { profession } = useTheme();
     const validProfession = Object.keys(templates).includes(profession) ? profession : 'legal';
     const theme = useProfessionTheme(validProfession);
 

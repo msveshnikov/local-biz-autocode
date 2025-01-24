@@ -1,11 +1,13 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { CampaignProvider } from './context/CampaignContext';
-import Dashboard from './components/Dashboard/Dashboard';
-import CampaignBuilder from './components/CampaignBuilder/CampaignBuilder';
-import Templates from './components/Templates/Templates';
+import { useTheme as useProfessionTheme } from './utils/theme';
 
 const ThemeContext = createContext();
+
+const Dashboard = lazy(() => import('./components/Dashboard/Dashboard'));
+const CampaignBuilder = lazy(() => import('./components/CampaignBuilder/CampaignBuilder'));
+const Templates = lazy(() => import('./components/Templates/Templates'));
 
 export function useTheme() {
     return useContext(ThemeContext);
@@ -13,20 +15,59 @@ export function useTheme() {
 
 function Navigation() {
     const { profession } = useTheme();
+    const theme = useProfessionTheme(profession);
 
     return (
-        <nav className={`navbar ${profession}`}>
+        <nav className={`navbar ${profession}`} style={{ backgroundColor: theme.colors.primary }}>
             <div className="container">
-                <Link to="/" className="brand">
+                <Link to="/" className="brand" style={{ color: theme.colors.background }}>
                     MarketingPlatform
                 </Link>
                 <div className="nav-links">
-                    <Link to="/dashboard">Analytics</Link>
-                    <Link to="/templates">Templates</Link>
-                    <Link to="/campaign">Campaign Wizard</Link>
+                    <Link to="/dashboard" style={{ color: theme.colors.background }}>
+                        Analytics
+                    </Link>
+                    <Link to="/templates" style={{ color: theme.colors.background }}>
+                        Templates
+                    </Link>
+                    <Link to="/campaign" style={{ color: theme.colors.background }}>
+                        Campaign Wizard
+                    </Link>
                 </div>
             </div>
         </nav>
+    );
+}
+
+function HomeHero() {
+    const { profession } = useTheme();
+    const theme = useProfessionTheme(profession);
+    const ctaMap = {
+        legal: 'Schedule Consultation',
+        medical: 'Book Appointment',
+        plumbing: 'Call Now',
+        default: 'Get Started'
+    };
+
+    return (
+        <section className="hero" style={{ backgroundColor: theme.colors.background }}>
+            <h1 style={{ color: theme.colors.primary }}>Boost Your Local Business ROI</h1>
+            <p style={{ color: theme.colors.text }}>
+                Professional marketing solutions for service providers
+            </p>
+            <Link
+                to="/campaign"
+                style={{
+                    backgroundColor: theme.colors.accent,
+                    color: theme.colors.text,
+                    padding: '12px 24px',
+                    borderRadius: '4px',
+                    textDecoration: 'none'
+                }}
+            >
+                {ctaMap[profession] || ctaMap.default}
+            </Link>
+        </section>
     );
 }
 
@@ -39,34 +80,20 @@ function App() {
                 <BrowserRouter>
                     <div className="app-container">
                         <Navigation />
-
                         <main className="main-content">
-                            <Routes>
-                                <Route
-                                    path="/dashboard"
-                                    element={<Dashboard profession={profession} />}
-                                />
-                                <Route
-                                    path="/templates"
-                                    element={<Templates profession={profession} />}
-                                />
-                                <Route path="/campaign" element={<CampaignBuilder />} />
-                                <Route
-                                    path="/"
-                                    element={
-                                        <section className="hero">
-                                            <h1>Boost Your Local Business ROI</h1>
-                                            <p>
-                                                Professional marketing solutions for service
-                                                providers
-                                            </p>
-                                        </section>
-                                    }
-                                />
-                            </Routes>
+                            <Suspense fallback={<div className="loading-spinner">Loading...</div>}>
+                                <Routes>
+                                    <Route path="/dashboard" element={<Dashboard />} />
+                                    <Route path="/templates" element={<Templates />} />
+                                    <Route path="/campaign" element={<CampaignBuilder />} />
+                                    <Route path="/" element={<HomeHero />} />
+                                </Routes>
+                            </Suspense>
                         </main>
-
-                        <footer className="app-footer">
+                        <footer
+                            className="app-footer"
+                            style={useProfessionTheme(profession).colors}
+                        >
                             <div className="container">
                                 <p>© 2024 MarketingPlatform. All rights reserved.</p>
                                 <div className="footer-links">
